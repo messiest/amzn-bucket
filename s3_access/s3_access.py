@@ -23,16 +23,16 @@ class S3Bucket:
         exists = True
         try:
             s3.meta.client.head_bucket(Bucket=self.name)
-        except botocore.exceptions.ClientError as e:
-            # If it was a 404 error, then the bucket does not exist.
-            error_code = int(e.response['Error']['Code'])
-            if error_code == 404:
+        except botocore.exceptions.ClientError as error:
+            error_code = int(error.response['Error']['Code'])
+            if error_code == 404:  # bucket does not exist.
                 print("{} - Bucket does not exist.".format(error_code))
                 exists = False
 
         if self.printer:
-            print("bucket '{}' exists? {}".format(self.name, exists))
+            print("bucket <{}> exists? {}".format(self.name, exists))
 
+        # populate class attributes
         self.bucket = _bucket
         self.objects = self.get_objects()
         self.keys = self.get_keys()
